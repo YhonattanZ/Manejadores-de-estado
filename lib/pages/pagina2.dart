@@ -1,3 +1,5 @@
+import 'package:estados_singleton/models/usuario.dart';
+import 'package:estados_singleton/services/usuario_services.dart';
 import 'package:flutter/material.dart';
 
 class Pagina2 extends StatelessWidget {
@@ -10,7 +12,14 @@ class Pagina2 extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.amber[400],
         centerTitle: true,
-        title: const Text('Pagina 2'),
+        title: StreamBuilder(
+          stream: usuarioService.usuarioStreamController,
+          builder: (context, snapshot) {
+            return snapshot.hasData
+                ? Text('Nombre: ${snapshot.data?.nombre}')
+                : Text('Pagina 2 ');
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -26,7 +35,10 @@ class Pagina2 extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              final nuevoUsuario = Usuario(nombre: 'Yhonattan', edad: 22);
+              usuarioService.cargarUsuario(nuevoUsuario);
+            },
             color: Colors.amber[200],
             child: const Text(
               'Establecer usuario',
@@ -34,7 +46,9 @@ class Pagina2 extends StatelessWidget {
             ),
           ),
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              usuarioService.cambiarEdad(25);
+            },
             color: Colors.amber[200],
             child: const Text(
               'Cambiar edad',
