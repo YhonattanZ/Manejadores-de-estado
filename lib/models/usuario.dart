@@ -1,7 +1,14 @@
 class Usuario {
-  String? nombre;
-  String? edad;
-  List<String>? profesiones;
+  String nombre;
+  int edad;
+  List<String> profesiones;
 
-  Usuario({this.edad, this.nombre, this.profesiones});
+  Usuario(
+      {required this.edad, required this.nombre, required this.profesiones});
+
+  Usuario copyWith({String? nombre, int? edad, List<String>? profesiones}) =>
+      Usuario(
+          edad: edad ?? this.edad,
+          nombre: nombre ?? this.nombre,
+          profesiones: profesiones ?? this.profesiones);
 }
