@@ -1,21 +1,28 @@
+import 'package:estados_singleton/controllers/usuario_controller.dart';
+import 'package:estados_singleton/models/usuario.dart';
+import 'package:estados_singleton/pages/pagina2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Pagina1 extends StatelessWidget {
   const Pagina1({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final usuarioCtrl = Get.put(UsuarioController());
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.blue[400],
         title: const Text('Pagina 1'),
       ),
-      body: const InfoUsuario(),
+      body: Obx(() => usuarioCtrl.existeUsuario.value
+          ? InfoUsuario(usuario: usuarioCtrl.usuario.value)
+          : const NoInfo()),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple[300],
         onPressed: () {
-          Navigator.pushReplacementNamed(context, 'pagina2');
+          Get.to(() => const Pagina2());
         },
         child: const Icon(
           Icons.navigate_next_rounded,
@@ -26,10 +33,21 @@ class Pagina1 extends StatelessWidget {
   }
 }
 
+class NoInfo extends StatelessWidget {
+  const NoInfo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: const Center(child: Text('No hay usuario seeccionado')),
+    );
+  }
+}
+
 class InfoUsuario extends StatelessWidget {
-  const InfoUsuario({
-    Key? key,
-  }) : super(key: key);
+  final Usuario usuario;
+
+  const InfoUsuario({super.key, required this.usuario});
 
   @override
   Widget build(BuildContext context) {
@@ -39,29 +57,25 @@ class InfoUsuario extends StatelessWidget {
       width: double.infinity,
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const <Widget>[
-            Text(
+          children: <Widget>[
+            const Text(
               'General',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
-            Divider(),
+            const Divider(),
             ListTile(
-              title: Text('Nombre: '),
+              title: Text('Nombre: ${usuario.nombre}'),
             ),
             ListTile(
-              title: Text('Edad: '),
+              title: Text('Edad: ${usuario.edad}'),
             ),
-            Text(
+            const Text(
               'Profesiones',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
-            Divider(),
-            ListTile(
-              title: Text('Profesion actual: '),
-            ),
-            ListTile(
-              title: Text('Profesion anterior: '),
-            ),
+            const Divider(),
+            ...?usuario.profesiones
+                ?.map((value) => ListTile(title: Text(value)))
           ]),
     );
   }
